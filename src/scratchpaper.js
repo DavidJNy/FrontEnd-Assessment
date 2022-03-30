@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { MDBInput, MDBCol } from "mdbreact";
+import { MDBInput, MDBCol } from 'mdbreact';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import "bootstrap-css-only/css/bootstrap.min.css";
-import "mdbreact/dist/css/mdb.css";
+import 'bootstrap-css-only/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
 
 function App() {
 
     const [student, setStudent] = useState([]);
-    const [entry, setEntry] = useState("");
+    const [entry, setEntry] = useState('');
     const [filteredResults, setFilteredResults] = useState([]);
+    const [toggle, setToggle] = useState(false);
 
     useEffect(() => {
-        fetch("https://api.hatchways.io/assessment/students")
+        fetch('https://api.hatchways.io/assessment/students')
             .then(response => {
                 return response.json();
             })
@@ -34,43 +35,60 @@ function App() {
     }
 
     useEffect(() => {
-        console.log(entry)
         const filteredData = student.filter((item) => {
-            let tempfullname = item.firstName.concat(" ", item.lastName);
+            let tempfullname = item.firstName.concat(' ', item.lastName);
             return tempfullname.toLowerCase().includes(entry.toLowerCase())
         })
         setFilteredResults(filteredData)
-        console.log(filteredResults)
-    }, [entry])
+    }, [entry, student])
+
+
+    function plusOrMinus(poop) {
+        console.log('hi')
+    }
+
+    function listofgrades(listofresults) {
+        let result = listofresults.map(Number);
+        return (
+            result.map((poo, index) => <div>Test {index + 1} : {poo}</div>)
+        )
+    }
 
     return (
-        <div id="body">
+        <div id='body'>
             <div class="container w-50 p-3 border-bottom">
-                <MDBCol md="12">
-                    <MDBInput hint="Search" type="text" containerClass="mt-0" onChange={(event) => { setEntry(event.target.value) }} />
+                <MDBCol md='12'>
+                    <MDBInput hint='Search' type='text' containerClass='mt-0' onChange={(event) => { setEntry(event.target.value) }} />
                 </MDBCol>
-            </div>
-            <div>
-                {filteredResults.map((dude) => (
-                    <div class='container w-50 p-3 border-bottom' key={dude.id}>
-                        <div class="row pl-5">
-                            <img class="" alt="" id="image" src={dude.pic}></img>
-                            <div class="col">
-                                <h1>{dude.firstName + " " + dude.lastName}</h1>
-                                <div class="container">
+                <div>
+                    {filteredResults.map((dude) => (
+                        <div class="container-fluid w-100 border-bottom d-flex flex-row" id='card' key={dude.id}>
+                            <div class='d-flex justify-content-start'>
+                                <img alt='' id='image' src={dude.pic}></img>
+                            </div>
+                            <div class='flex-fill justify-content-center'>
+                                <h1>{dude.firstName + ' ' + dude.lastName}</h1>
+                                <div class='pl-3'>
                                     <div>Email: {dude.email}</div>
                                     <div>Company: {dude.company}</div>
                                     <div>Skill: {dude.skill}</div>
                                     <div>Average: {calScore(dude.grades)}%</div>
+                                    <div>
+                                        {listofgrades(dude.grades)}
+                                    </div>
                                 </div>
                             </div>
+                            <button class='align-self-start justify-content-end' onClick={plusOrMinus} type="button" >+</button>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     );
 }
 
 export default App;
+
+//https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_toggle_hide_show
+
 

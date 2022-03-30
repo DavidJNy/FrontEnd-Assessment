@@ -9,9 +9,14 @@
   background-color: white;
 }
 
+#card {
+  padding: 10px; 
+  background-color: white;
+}
+
 #image {
   height: 10em ;
-  width: 15em ;
+  width: 12em ;
   border-radius: 80% ;
   border-style: solid !important; 
   border-width: 1px ;
@@ -19,4 +24,12 @@
 
 h1 {
   font-weight: bold;
+  padding-left: 10px;
 }
+
+button {
+  min-height: 30x;
+  min-width: 30px;
+}
+
+
