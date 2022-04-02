@@ -5,19 +5,17 @@ import { MDBInput, MDBCol } from 'mdbreact';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
+import { render } from '@testing-library/react';
 
 function App() {
-  // constructor() {
-  //   super()
-  //   this.state = {
-  //     isHidden: true
-  //   }
-  // }
   
   const [student, setStudent] = useState([]);
   const [entry, setEntry] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState([{
+                                location: null,
+                                display: false
+                              }]);
 
   useEffect(() => {
     fetch('https://api.hatchways.io/assessment/students')
@@ -48,11 +46,10 @@ function App() {
     setFilteredResults(filteredData)
   }, [entry, student])
 
-
-  function plusOrMinus(id) {
+    function plusOrMinus(id) {
+      console.log(id);
+    }
     
-  }
-
   function listOfGrades(listOfResults) {
     let result = listOfResults.map(Number);
     return (
@@ -60,15 +57,15 @@ function App() {
     )
   }
   
-
   return (
+    
     <div id='body'>
       <div class="container w-50 p-3 border-bottom">
         <MDBCol md='12'>
           <MDBInput hint='Search' type='text' containerClass='mt-0' onChange={(event) => { setEntry(event.target.value) }} />
         </MDBCol>
         <div>
-          {filteredResults.map((dude) => (
+          {filteredResults.map((dude, index) => (
             <div class="container-fluid w-100 border-bottom d-flex flex-row" id='card' key={dude.id}>
               <div class='d-flex justify-content-start'>
                 <img alt='' id='image' src={dude.pic}></img>
@@ -80,12 +77,12 @@ function App() {
                   <div>Company: {dude.company}</div>
                   <div>Skill: {dude.skill}</div>
                   <div>Average: {calScore(dude.grades)}%</div>
-                  <div id={dude.id} style={{display: "none"}}>
+                  <div id={index} class=''>
                     {listOfGrades(dude.grades)}
                   </div>
                 </div>
               </div>
-              <button class='align-self-start justify-content-end' onClick={plusOrMinus(dude.id)} type="button" >+</button>
+              <button class='btn btn-primary align-self-start justify-content-end bi bi-plus' onClick={plusOrMinus(value)} value={index} type="button" data-toggle="button" aria-pressed="false" autoComplete="off">+</button>
             </div>
           ))}
         </div>
