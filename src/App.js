@@ -5,18 +5,14 @@ import { MDBInput, MDBCol } from 'mdbreact';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
-import { render } from '@testing-library/react';
 
 function App() {
   
   const [student, setStudent] = useState([]);
   const [entry, setEntry] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
-  const [toggle, setToggle] = useState([{
-                                location: null,
-                                display: false
-                              }]);
 
+  //Fetching data
   useEffect(() => {
     fetch('https://api.hatchways.io/assessment/students')
       .then(response => {
@@ -24,13 +20,19 @@ function App() {
       })
       .then(data => {
         setStudent(data.students);
-        setFilteredResults(data.students)
       })
       .catch((err) => {
         console.log(err.message);
       })
   }, []);
+  
+//Adding two keys to the JSONs (display & tag)
+  student.forEach((poo) => {
+    poo.display = false;
+    poo.tag = "";
+    })
 
+// Calculating the Average of the scores
   const calScore = (listofgrades) => {
     let numbArray = listofgrades.map(Number)
     const sum = numbArray.reduce((a, b) => a + b, 0);
@@ -38,6 +40,7 @@ function App() {
     return finalAvg;
   }
 
+//Filtering what student to display in the searchbar
   useEffect(() => {
     const filteredData = student.filter((item) => {
       let tempfullname = item.firstName.concat(' ', item.lastName);
@@ -46,10 +49,15 @@ function App() {
     setFilteredResults(filteredData)
   }, [entry, student])
 
-    function plusOrMinus(id) {
-      console.log(id);
-    }
-    
+//Toggling the grade view in each student
+
+
+  function plusOrMinus(fauxIndex) {
+    filteredResults[fauxIndex].display = !filteredResults[fauxIndex].display
+    console.log(filteredResults[fauxIndex])
+  };
+
+//Converting the string of grades into numbers
   function listOfGrades(listOfResults) {
     let result = listOfResults.map(Number);
     return (
@@ -57,8 +65,8 @@ function App() {
     )
   }
   
+  
   return (
-    
     <div id='body'>
       <div class="container w-50 p-3 border-bottom">
         <MDBCol md='12'>
@@ -77,12 +85,12 @@ function App() {
                   <div>Company: {dude.company}</div>
                   <div>Skill: {dude.skill}</div>
                   <div>Average: {calScore(dude.grades)}%</div>
-                  <div id={index} class=''>
-                    {listOfGrades(dude.grades)}
+                  <div class=''>
+                      {dude.display ? listOfGrades(dude.grades) : null }
                   </div>
                 </div>
               </div>
-              <button class='btn btn-primary align-self-start justify-content-end bi bi-plus' onClick={plusOrMinus(value)} value={index} type="button" data-toggle="button" aria-pressed="false" autoComplete="off">+</button>
+              <button class='btn btn-primary align-self-start justify-content-end' onClick={() => plusOrMinus(index)} type="button" data-toggle="button" aria-pressed="false" autoComplete="off" >+</button>
             </div>
           ))}
         </div>
@@ -92,7 +100,3 @@ function App() {
 }
 
 export default App;
-
-//https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_toggle_hide_show
-
-
