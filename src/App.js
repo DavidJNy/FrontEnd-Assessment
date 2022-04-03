@@ -11,6 +11,7 @@ function App() {
   const [student, setStudent] = useState([]);
   const [entry, setEntry] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
+  const [indexQ, setIndexQ] = useState([]);
 
   //Fetching data
   useEffect(() => {
@@ -28,7 +29,7 @@ function App() {
   
 //Adding two keys to the JSONs (display & tag)
   student.forEach((poo) => {
-    poo.display = false;
+    poo.display = true;
     poo.tag = "";
     })
 
@@ -47,14 +48,15 @@ function App() {
       return tempfullname.toLowerCase().includes(entry.toLowerCase())
     })
     setFilteredResults(filteredData)
+
   }, [entry, student])
 
 //Toggling the grade view in each student
-
-
   function plusOrMinus(fauxIndex) {
-    filteredResults[fauxIndex].display = !filteredResults[fauxIndex].display
-    console.log(filteredResults[fauxIndex])
+    const fart = !filteredResults[fauxIndex].display
+    // const test = filteredResults[fauxIndex].grades
+    setFilteredResults(filteredResults[fauxIndex]({ display: fart }))
+    console.log(filteredResults[fauxIndex]({display: fart}))
   };
 
 //Converting the string of grades into numbers
@@ -64,7 +66,6 @@ function App() {
       result.map((poo, index) => <div key={index}>Test {index + 1} : {poo}</div>)
     )
   }
-  
   
   return (
     <div id='body'>
@@ -85,8 +86,8 @@ function App() {
                   <div>Company: {dude.company}</div>
                   <div>Skill: {dude.skill}</div>
                   <div>Average: {calScore(dude.grades)}%</div>
-                  <div class=''>
-                      {dude.display ? listOfGrades(dude.grades) : null }
+                  <div>
+                    {}
                   </div>
                 </div>
               </div>

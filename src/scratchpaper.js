@@ -61,20 +61,20 @@ function App() {
                     <MDBInput hint='Search' type='text' containerClass='mt-0' onChange={(event) => { setEntry(event.target.value) }} />
                 </MDBCol>
                 <div>
-                    {filteredResults.map((dude) => (
-                        <div class="container-fluid w-100 border-bottom d-flex flex-row" id='card' key={dude.id}>
+                    {filteredResults.map((deets) => (
+                        <div class="container-fluid w-100 border-bottom d-flex flex-row" id='card' key={deets.id}>
                             <div class='d-flex justify-content-start'>
-                                <img alt='' id='image' src={dude.pic}></img>
+                                <img alt='' id='image' src={deets.pic}></img>
                             </div>
                             <div class='flex-fill justify-content-center'>
-                                <h1>{dude.firstName + ' ' + dude.lastName}</h1>
+                                <h1>{deets.firstName + ' ' + deets.lastName}</h1>
                                 <div class='pl-3'>
-                                    <div>Email: {dude.email}</div>
-                                    <div>Company: {dude.company}</div>
-                                    <div>Skill: {dude.skill}</div>
-                                    <div>Average: {calScore(dude.grades)}%</div>
+                                    <div>Email: {deets.email}</div>
+                                    <div>Company: {deets.company}</div>
+                                    <div>Skill: {deets.skill}</div>
+                                    <div>Average: {calScore(deets.grades)}%</div>
                                     <div>
-                                        {listofgrades(dude.grades)}
+                                        {listofgrades(deets.grades)}
                                     </div>
                                 </div>
                             </div>
@@ -92,3 +92,16 @@ export default App;
 //https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_toggle_hide_show
 
 
+{/* <div>
+    {arrayOfDetails.map((deets, index) => (
+        <div>
+            <h1>{deets.firstName + ' ' + deets.lastName}</h1>
+            <div>
+                <div id={index}>
+                    {listOfGrades(deets.grades)}
+                </div>
+            </div>
+            <button type="button" data-toggle="button" aria-pressed="false" autoComplete="off">+</button>
+        </div>
+    ))}
+</div> */}
