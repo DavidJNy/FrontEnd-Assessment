@@ -11,7 +11,7 @@ function App() {
   const [student, setStudent] = useState([]);
   const [entry, setEntry] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
-  const [indexQ, setIndexQ] = useState([]);
+  // const [indexQ, setIndexQ] = useState([]);
 
   //Fetching data
   useEffect(() => {
@@ -29,7 +29,7 @@ function App() {
   
 //Adding two keys to the JSONs (display & tag)
   student.forEach((poo) => {
-    poo.display = true;
+    poo.display = false;
     poo.tag = "";
     })
 
@@ -51,13 +51,45 @@ function App() {
 
   }, [entry, student])
 
-//Toggling the grade view in each student
+  //Toggling the grade view in each student ( online sources say React Redux would be an option as manipulating data to effect the UI but i ain't wasting more time figure out that documentation)
   function plusOrMinus(fauxIndex) {
-    const fart = !filteredResults[fauxIndex].display
-    // const test = filteredResults[fauxIndex].grades
-    setFilteredResults(filteredResults[fauxIndex]({ display: fart }))
-    console.log(filteredResults[fauxIndex]({display: fart}))
-  };
+    // Do it the react way, have an expanded value in each item in your array, and toggle that value forcing the array to rerender with the expanded true.If you get my gist
+    let targetView = !filteredResults[fauxIndex].display // This is the targetView variable to change the state
+    let tempResult = filteredResults
+    
+    
+    
+    // let fakeobjects = [
+    //   {
+    //     firstName: 'ii',
+    //     lastName: 'iie'
+    //   },
+    //   {
+    //     firstName: 'ii',
+    //     lastName: 'iie'
+    //   },
+    //   {
+    //     firstName: 'ii',
+    //     lastName: 'iie'
+    //   },
+    // ]
+    // console.log(fakeobjects)
+    // console.log(filteredResults)
+
+    // setFilteredResults(fakeobjects)
+
+    // console.log(targetObj)
+    // console.log(filteredResults)  //This is an array of objects
+    
+
+
+      // setFilteredResults(prevState => {
+      //   const test = [...prevState];
+      //   return test
+      // })
+      // console.log(filteredResults)
+
+    }
 
 //Converting the string of grades into numbers
   function listOfGrades(listOfResults) {
@@ -87,7 +119,7 @@ function App() {
                   <div>Skill: {dude.skill}</div>
                   <div>Average: {calScore(dude.grades)}%</div>
                   <div>
-                    {}
+                    {dude.display ? listOfGrades(dude.grades) : null}
                   </div>
                 </div>
               </div>
