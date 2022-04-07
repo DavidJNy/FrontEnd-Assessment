@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { MDBInput, MDBCol } from 'mdbreact';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
+import  { produce } from "immer";
+
 
 function App() {
   
   const [student, setStudent] = useState([]);
   const [entry, setEntry] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
-  // const [indexQ, setIndexQ] = useState([]);
 
   //Fetching data
   useEffect(() => {
@@ -53,24 +54,24 @@ function App() {
     })
     setFilteredResults(filteredData)
 
-  }, [entry, student])
+  }, [entry, student ])
 
   //Toggling the grade view in each student ( online sources say React Redux would be an option as manipulating data to effect the UI but i ain't wasting more time figure out that documentation)
-  function plusOrMinus(fauxIndex) {
-    let targetView = !filteredResults[fauxIndex].display // This is the targetView variable to change the state
-    
-    
-    
-    
-    // WRONG WAY OF DOING IT! DON"T MANIPULATE IT DIRECTLY
-
-    // let tempResult = filteredResults                 //Making a shallow copy of the array of objects
-    // tempResult[fauxIndex].display = targetView            //targetobj
-    // setFilteredResults(tempResult)
-    // console.log(filteredResults)
+  const plusOrMinus = (id) => {
+    // const targetView = !filteredResults[id].display
+    // setFilteredResults(
+    // const updatedDisplay = produce(filteredResults, draft => {
+    //   const index = draft.id(todo => todo.id === id)
+    //   if (index !== -1) draft[index].done = true
+    // })
+    // )
+    // console.log(updatedDisplay)
+    console.log(id)
+    // console.log(targetView)
   }
 
-//Converting the string of grades into numbers
+  console.log(filteredResults)
+
   function listOfGrades(listOfResults) {
     let result = listOfResults.map(Number);
     return (
@@ -102,7 +103,7 @@ function App() {
                   </div>
                 </div>
               </div>
-              <button class='btn btn-primary align-self-start justify-content-end' onClick={() => plusOrMinus(index)} type="button" data-toggle="button" aria-pressed="false" autoComplete="off" >+</button>
+              <button class='btn btn-primary align-self-start justify-content-end' onClick={() => plusOrMinus(dude.id)} type="button" data-toggle="button" aria-pressed="false" autoComplete="off" >+</button>
             </div>
           ))}
         </div>
