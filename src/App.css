@@ -27,10 +27,16 @@ h1 {
   padding-left: 10px;
 }
 
-.btn {
-  font-size: 50px;
-  min-height: 10x;
-  min-width: 30px;
+#button {
+  font-size: 30px;
 }
 
-
+.d-inline-flex {
+  font-size: large;
+  font-weight:500;
+  border-radius: 10%;
+  padding: 60px;
+  margin-top: 5px;
+  margin-right: 6px;
+  background-color: rgb(202, 202, 202);
+}

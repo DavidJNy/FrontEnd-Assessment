@@ -1,93 +1,108 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { MDBInput, MDBCol } from 'mdbreact';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
-import  { produce } from "immer";
+import { produce } from "immer";
 
 
 function App() {
-  
+
   const [student, setStudent] = useState([]);
   const [entry, setEntry] = useState('');
-  const [filteredResults, setFilteredResults] = useState([]);
+  const [tag, setTag] = useState('');
+  const [searchTagEntry, setSearchTagEntry] = useState('');
 
-  //Fetching data
+  //Fetching data on on first load
   useEffect(() => {
     fetch('https://api.hatchways.io/assessment/students')
       .then(response => {
         return response.json();
       })
       .then(data => {
-        setStudent(data.students);
+        //Adding two keys to the JSONs (display & tag) Rendering only on first load.
+        let addData = data.students
+        addData.forEach((poo) => {
+          poo.display = false;
+          poo.tag = ["d", "dffd", "dfdf"];
+        })
+        setStudent(addData);
       })
       .catch((err) => {
-          console.log(err.message);
+        console.log(err.message);
       })
-    }, []);
-        
-//Adding two keys to the JSONs (display & tag) 
-  useEffect(() => {
-    let addMoreToStu = student;
-    addMoreToStu.forEach((poo) => {
-      poo.display = false;
-      poo.tag = "";
-  })
-  setStudent(addMoreToStu)
-  }, [student])
+  }, []);
 
-// Calculating the Average of the scores
-  const calScore = (listofgrades) => {
-    let numbArray = listofgrades.map(Number)
+  // Calculating the Average of the scores
+  function calScore (listOfGrades) {
+    let numbArray = listOfGrades.map(Number)
     const sum = numbArray.reduce((a, b) => a + b, 0);
     const finalAvg = (sum / numbArray.length) || 0;
     return finalAvg;
   }
 
-//Filtering what student to display in the searchbar
-  useEffect(() => {
-    const filteredData = student.filter((item) => {
-      let tempfullname = item.firstName.concat(' ', item.lastName);
-      return tempfullname.toLowerCase().includes(entry.toLowerCase())
-    })
-    setFilteredResults(filteredData)
-
-  }, [entry, student ])
-
-  //Toggling the grade view in each student ( online sources say React Redux would be an option as manipulating data to effect the UI but i ain't wasting more time figure out that documentation)
-  const plusOrMinus = (id) => {
-    // const targetView = !filteredResults[id].display
-    // setFilteredResults(
-    // const updatedDisplay = produce(filteredResults, draft => {
-    //   const index = draft.id(todo => todo.id === id)
-    //   if (index !== -1) draft[index].done = true
-    // })
-    // )
-    // console.log(updatedDisplay)
-    console.log(id)
-    // console.log(targetView)
+  //Toggling the grade view in each student using immer npm package
+  function plusOrMinus(id) {
+    setStudent(produce(student, draft => {
+      draft[id].display = !draft[id].display
+    }))
   }
-
-  console.log(filteredResults)
-
+  
+  //Filtering what student to display in the searchbar AND TAG!! Combine the search results of tag and search bar to be the return data
+  const filteredData = student.filter((item) => {
+    let tempFullName = item.firstName.concat(' ', item.lastName);
+    let listOfTag = item.tag
+    return (
+      tempFullName.toLowerCase().includes(entry.toLowerCase())
+    )
+  })
+  
+  //Displaying a list of grades.
   function listOfGrades(listOfResults) {
     let result = listOfResults.map(Number);
     return (
-      result.map((poo, index) => <div key={index}>Test {index + 1} : {poo}</div>)
-    )
+      result.map((poo, index) => <div key={index}>Test {index + 1} : {poo} %</div>)
+      )
+  }       
+  
+  //Displaying a list of tags.
+  function tagComp(AllTheTags) {
+    if (AllTheTags === []) return null
+    return (AllTheTags.map((draftTag, index) => (
+      <div class="d-inline-flex p-1 " key={index}>
+        {draftTag}
+      </div>
+    )))
+  }
+  
+
+  //Adding the tag to the student
+  function addTag(e, index) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      setStudent(produce(student,draft => {
+        let arrayOfTags = draft[index].tag
+        arrayOfTags.push(tag)
+      }))
+    }
+    // document.getElementById("myFileInputID").value = null;
+    // empty the input field dude
   }
   
   return (
     <div id='body'>
       <div class="container w-50 p-3 border-bottom">
         <MDBCol md='12'>
-          <MDBInput hint='Search' type='text' containerClass='mt-0' onChange={(event) => { setEntry(event.target.value) }} />
+          <MDBInput hint='Search by name' type='text' containerClass='mt-0' onChange={(event)  => { setEntry(event.target.value) }} />
+        </MDBCol>
+        <MDBCol md='12'>
+          <MDBInput hint='Search by tag' type='text' containerClass='mt-0' onChange={(event) => { setSearchTagEntry(event.target.value) }} />
         </MDBCol>
         <div>
-          {filteredResults.map((dude, index) => (
-            <div class="container-fluid w-100 border-bottom d-flex flex-row" id='card' key={dude.id}>
+          {filteredData.map((dude, index) => (
+            <div class="container-fluid w-100 border-bottom d-flex flex-row" id='card' key={dude.id}> {/*A scrollbar should be added here but can't find the one you used in the demo */}
               <div class='d-flex justify-content-start'>
                 <img alt='' id='image' src={dude.pic}></img>
               </div>
@@ -98,12 +113,15 @@ function App() {
                   <div>Company: {dude.company}</div>
                   <div>Skill: {dude.skill}</div>
                   <div>Average: {calScore(dude.grades)}%</div>
-                  <div>
-                    {dude.display ? listOfGrades(dude.grades) : null}
-                  </div>
+                  {dude.display ? listOfGrades(dude.grades) : null}       {/* this would be a nice to send to another component*/}
+                  {tagComp(dude.tag)}
+                  <MDBCol md='6'>
+                    <MDBInput hint='Add Tag' type='text' containerClass='mt-0' onKeyDown={(event) => (addTag(event, index))} onChange={(event) => setTag(event.target.value)} id="InputBox"/>       
+                  </MDBCol>
                 </div>
               </div>
-              <button class='btn btn-primary align-self-start justify-content-end' onClick={() => plusOrMinus(dude.id)} type="button" data-toggle="button" aria-pressed="false" autoComplete="off" >+</button>
+              <button id="button" class='font-weight-bold text-center align-self-start justify-content-end' onClick={() => plusOrMinus(index)}>{dude.display ? "-" : "+"}</button>
+              {/* Sorry. Can't find out how to make my button look like your button. lol*/}
             </div>
           ))}
         </div>
