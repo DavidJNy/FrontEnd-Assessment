@@ -12,7 +12,6 @@ function App() {
 
   const [student, setStudent] = useState([]);
   const [entry, setEntry] = useState('');
-  const [tag, setTag] = useState('');
   const [searchTagEntry, setSearchTagEntry] = useState('');
 
   //Fetching data on on first load
@@ -26,7 +25,7 @@ function App() {
         let addData = data.students
         addData.forEach((poo) => {
           poo.display = false;
-          poo.tag = ["d", "dffd", "dfdf"];
+          poo.tag = [];
         })
         setStudent(addData);
       })
@@ -55,6 +54,7 @@ function App() {
     let tempFullName = item.firstName.concat(' ', item.lastName);
     let listOfTag = item.tag
     return (
+      listOfTag.join(" ").toLowerCase().includes(searchTagEntry.toLowerCase()) &&
       tempFullName.toLowerCase().includes(entry.toLowerCase())
     )
   })
@@ -71,24 +71,26 @@ function App() {
   function tagComp(AllTheTags) {
     if (AllTheTags === []) return null
     return (AllTheTags.map((draftTag, index) => (
-      <div class="d-inline-flex p-1 " key={index}>
+      <div class="d-inline-flex p-2" key={index}>
         {draftTag}
       </div>
     )))
   }
   
-
   //Adding the tag to the student
   function addTag(e, index) {
     if (e.key === 'Enter') {
       e.preventDefault();
+      let newTag = e.target.value;
       setStudent(produce(student,draft => {
-        let arrayOfTags = draft[index].tag
-        arrayOfTags.push(tag)
+        let obj = draft.find(o => o.id === index)
+        let arrayOfTags = obj.tag
+        arrayOfTags.push(newTag)
       }))
+      let tarElment = document.getElementById(index-1);
+      console.log(tarElment)
+      tarElment.value= "";
     }
-    // document.getElementById("myFileInputID").value = null;
-    // empty the input field dude
   }
   
   return (
@@ -116,7 +118,7 @@ function App() {
                   {dude.display ? listOfGrades(dude.grades) : null}       {/* this would be a nice to send to another component*/}
                   {tagComp(dude.tag)}
                   <MDBCol md='6'>
-                    <MDBInput hint='Add Tag' type='text' containerClass='mt-0' onKeyDown={(event) => (addTag(event, index))} onChange={(event) => setTag(event.target.value)} id="InputBox"/>       
+                    <MDBInput hint='Add Tag' type='text' autoComplete="off" containerClass='mt-0' onKeyDown={(event) => (addTag(event, dude.id))} id={index}/>       
                   </MDBCol>
                 </div>
               </div>
