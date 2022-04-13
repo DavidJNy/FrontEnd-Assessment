@@ -87,28 +87,34 @@ function App() {
         let arrayOfTags = obj.tag
         arrayOfTags.push(newTag)
       }))
-      let tarElment = document.getElementById(index-1);
+      let stringOfIndex = index.toString();
+      let tarElment = document.getElementById(stringOfIndex);
       console.log(tarElment)
-      tarElment.value= "";
+      tarElment.value = " "
+      //MDBinput component didn't allow me to change it so i just put generic input html
     }
   }
   
   return (
     <div id='body'>
       <div class="container w-50 p-3 border-bottom">
-        <MDBCol md='12'>
+        <form class='d-flex flex-column'>
+          <input class='p-2 ' placeholder='Search by name' type='text' containerClass='mt-0' onChange={(event) => { setEntry(event.target.value) }} ></input>
+          <input class='p-2 ' placeholder='Search by tag' type='text' containerClass='mt-0' onChange={(event) => { setSearchTagEntry(event.target.value) }} ></input>
+        </form>
+        {/* <MDBCol md='12'>
           <MDBInput hint='Search by name' type='text' containerClass='mt-0' onChange={(event)  => { setEntry(event.target.value) }} />
         </MDBCol>
         <MDBCol md='12'>
           <MDBInput hint='Search by tag' type='text' containerClass='mt-0' onChange={(event) => { setSearchTagEntry(event.target.value) }} />
-        </MDBCol>
+        </MDBCol> */}
         <div>
           {filteredData.map((dude, index) => (
             <div class="container-fluid w-100 border-bottom d-flex flex-row" id='card' key={dude.id}> {/*A scrollbar should be added here but can't find the one you used in the demo */}
               <div class='d-flex justify-content-start'>
                 <img alt='' id='image' src={dude.pic}></img>
               </div>
-              <div class='flex-fill justify-content-center'>
+              <div class='flex-grow-1 justify-content-center'>
                 <h1>{dude.firstName + ' ' + dude.lastName}</h1>
                 <div class='pl-3'>
                   <div>Email: {dude.email}</div>
@@ -117,12 +123,15 @@ function App() {
                   <div>Average: {calScore(dude.grades)}%</div>
                   {dude.display ? listOfGrades(dude.grades) : null}       {/* this would be a nice to send to another component*/}
                   {tagComp(dude.tag)}
-                  <MDBCol md='6'>
-                    <MDBInput hint='Add Tag' type='text' autoComplete="off" containerClass='mt-0' onKeyDown={(event) => (addTag(event, dude.id))} id={index}/>       
-                  </MDBCol>
+                  <form>
+                    <input class='p-2' placeholder='Add Tag' type='text' autoComplete="off" containerClass='mt-0' onKeyDown={(event) => (addTag(event, dude.id))} id={dude.id}></input>
+                    {/* <MDBCol md='6'>
+                      <MDBInput hint='Add Tag' type='text' autoComplete="off" containerClass='mt-0' onKeyDown={(event) => (addTag(event, dude.id))} id={dude.id}/>       
+                    </MDBCol> */}
+                  </form>
                 </div>
               </div>
-              <button id="button" class='font-weight-bold text-center align-self-start justify-content-end' onClick={() => plusOrMinus(index)}>{dude.display ? "-" : "+"}</button>
+              <button class='font-weight-bold display-3 align-self-start justify-content-end' onClick={() => plusOrMinus(index)}>{dude.display ? "-" : "+" }</button>
               {/* Sorry. Can't find out how to make my button look like your button. lol*/}
             </div>
           ))}
